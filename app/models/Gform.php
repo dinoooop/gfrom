@@ -134,19 +134,33 @@ class Gform {
         return $list;
     }
 
+    /**
+     * 
+     * Remove all non required fields from the array
+     * @param array $fields
+     * @param array $not_required_fields
+     * @return array
+     */
     function set_not_required_fields($fields, $not_required_fields) {
         $not_required_fields = array_fill_keys($not_required_fields, '');
         return array_diff_key($fields, $not_required_fields);
     }
 
-    function set_required_fields($form, $required_fields) {
-        $fields = array();
+    /**
+     * 
+     * Generate a new array with only required fields
+     * @param array $fields
+     * @param array $required_fields
+     * @return array
+     */
+    function set_required_fields($fields, $required_fields) {
+        $result = array();
         foreach ($required_fields as $value) {
-            if (isset($form['fields'][$value])) {
-                $fields[$value] = $form['fields'][$value];
+            if (isset($fields[$value])) {
+                $result[$value] = $fields[$value];
             }
         }
-        return $fields;
+        return $result;
     }
 
     function get_sample_form() {
