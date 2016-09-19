@@ -8,8 +8,8 @@ class Gform {
     public $form_types_orange = array(
         'text', 'email', 'password', 'hidden',
         'checkbox', 'radio', 'select', 'select-multiple',
-        'textarea', 'date', 'file', 'ckeditor', 'autocomplete', 'min_max', 'ng_location_tag', 'I_agree');
-    public $form_types_green = array('heading', 'paragraph', 'clearfix', 'country-state-city');
+        'textarea', 'date', 'file', 'ckeditor', 'autocomplete', 'min_max', 'ng_location_tag');
+    public $form_types_green = array('heading', 'paragraph');
 
     function __construct() {
         
@@ -62,25 +62,26 @@ class Gform {
 
         $field_value = '';
         $key = $field['name'];
-
-        if ($field['type'] == 'hidden') {
-            return $field['value'];
-        }
-
+        
+        
 
         if (!empty($this->form_values)) {
 
             if (isset($this->form_values[$key])) {
                 $field_value = $this->form_values[$key];
             } else {
-                $field_value = '';
+                $field_value = (isset($field['value']))? $field['value'] : '';
             }
-        } elseif (isset($field['default'])) {
-            $field_value = $field['default'];
         } else {
-            $field_value = '';
+            $field_value = isset($field['value'])? $field['value'] : (isset($field['default'])? $field['default'] : '');
         }
 
+        if ($field['type'] == 'min_max') {
+            $min_key = 'min_' . $field['name'];
+            $max_key = 'max_' . $field['name'];
+            $field_value[$min_key] = (isset($this->form_values[$min_key]))? $this->form_values[$min_key]: '';
+            $field_value[$max_key] = (isset($this->form_values[$max_key]))? $this->form_values[$max_key]: '';
+        }
         if ($field['type'] == 'checkbox' && $field_value == '') {
             $field_value = array();
         }
@@ -95,8 +96,8 @@ class Gform {
 
         $list = array();
         foreach ($form['fields'] as $field) {
-
-            if ($field['type'] == 'hidden') {
+            
+            if($field['type'] == 'hidden'){
                 continue;
             }
 
@@ -133,7 +134,7 @@ class Gform {
 
         return $list;
     }
-
+    
     /**
      * 
      * Remove all non required fields from the array
